@@ -7,7 +7,7 @@ public class InvestmentService extends LocalService {
 
     InvestmentService() {
         super("Investment-Service");
-        addReplier("Investment-Replier", "EXAMPLE.CLIENT");
+        addReplier("Investment-Replier", "EXAMPLE.INVESTMENT");
         addRequestor("Investment-Client", "EXAMPLE.CLIENT");
         addRequestor("Investment-Database", "EXAMPLE.DATABASE");
         addRequestor("Investment-Authorization", "EXAMPLE.AUTHORIZATION");
@@ -19,16 +19,22 @@ public class InvestmentService extends LocalService {
         switch (request) {
             case "Client-Investment":
             {
+                System.out.println("Client->Investment");
+                sendMessage("Investment-Authorization", "CCCCC" );
                 //TODO
                 break;
             }
             case "Authorization-Investment":
             {
+                System.out.println("Authorization->Investment");
+                sendMessage("Investment-Database", "CCCCC" );
                 //TODO
                 break;
             }
             case "Database-Investment":
             {
+                System.out.println("Database->Investment");
+                sendMessage("Investment-Client", "udalo sie" );
                 //TODO
                 break;
             }

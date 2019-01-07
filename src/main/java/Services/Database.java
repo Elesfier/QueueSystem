@@ -7,19 +7,31 @@ public class Database extends LocalService {
 
     Database() {
         super("Database");
-        //TODO
-        //addReplier();
-        //addRequestor();
+        addReplier("Database-Replier", "EXAMPLE.DATABASE");
+        addRequestor("Database-Investment", "EXAMPLE.INVESTMENT");
+        addRequestor("Database-Authorization", "EXAMPLE.AUTHORIZATION");
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
-        System.out.println( "Received form " + request + " : ");
-        for ( String mess : messages ) {
-            System.out.print( mess + "," );
+        switch (request) {
+            case "Investment-Database":
+            {
+                System.out.println("Investment->Database");
+                sendMessage("Database-Investment", "BBBBB" );
+                //TODO
+                break;
+            }
+            case "Authorization-Database":
+            {
+                System.out.println("Authorization->Database");
+                sendMessage("Database-Authorization", "AAAA" );
+                //TODO
+                break;
+            }
+            default:
+                System.out.println( getName() + ": strange message.");
         }
-        System.out.println( ";" );
-        //TODO zapisywanie do bazy danych
     }
 
     public static void main( String[] args ) {

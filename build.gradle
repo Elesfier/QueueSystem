@@ -37,4 +37,28 @@ task runJar( type: JavaExec ) {
     main = mainClassName
 }
 
+task runClient( type: JavaExec ) {
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'Services.Client'
+}
+
+task runDatabase( type: JavaExec ) {
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'Services.Database'
+}
+
+task runInvestmentService( type: JavaExec ) {
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'Services.InvestmentService'
+}
+
+task runAuthorization( type: JavaExec ) {
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'Services.UserAuthorization'
+}
+
 build.dependsOn.add("runJar")

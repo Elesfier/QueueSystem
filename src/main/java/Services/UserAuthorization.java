@@ -9,6 +9,7 @@ public class UserAuthorization extends LocalService {
         super("User-Authorization");
         addReplier("Authorization-Replier", "EXAMPLE.AUTHORIZATION");
         addRequestor("Authorization-Investment", "EXAMPLE.INVESTMENT");
+        addRequestor("Authorization-Database", "EXAMPLE.DATABASE");
     }
 
     @Override
@@ -16,6 +17,15 @@ public class UserAuthorization extends LocalService {
         switch (request) {
             case "Investment-Authorization":
             {
+                System.out.println("Investment->Authorization");
+                sendMessage("Authorization-Database", "DDDDD" );
+                //TODO
+                break;
+            }
+            case "Database-Authorization":
+            {
+                System.out.println("Database->Authorization");
+                sendMessage("Authorization-Investment", "DDDDD" );
                 //TODO
                 break;
             }

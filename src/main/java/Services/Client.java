@@ -3,6 +3,8 @@ package Services;
 
 import Communication.LocalService;
 
+import java.util.Arrays;
+
 public class Client extends LocalService {
 
     Client() {
@@ -13,11 +15,16 @@ public class Client extends LocalService {
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
-        System.out.println( "Client Received form " + request + " : {");
-        for ( String mess : messages ) {
-            System.out.print( mess + "," );
+        switch (request) {
+            case "Investment-Client":
+            {
+                System.out.println("Investment-Client");
+                //TODO
+                break;
+            }
+            default:
+                System.out.println( getName() + ": strange message.");
         }
-        System.out.println("}");
     }
 
     public static void main( String[] args ) {
@@ -33,6 +40,7 @@ public class Client extends LocalService {
             }
 
             String[] message = { "user", "password", "investement", "BLABLA", "100" };
+            System.out.println("Client->Investment");
             client.sendMessage("Client-Investment", message );
         }
     }
