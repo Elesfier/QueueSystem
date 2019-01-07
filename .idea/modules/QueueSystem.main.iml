@@ -5,10 +5,11 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$/../../src/main">
       <sourceFolder url="file://$MODULE_DIR$/../../src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../../src/main/resources" type="java-resource" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="Gradle: javax.jms:javax.jms-api:2.0.1" level="project" />
+    <orderEntry type="library" name="Gradle: org.apache.activemq:activemq-all:5.4.2" level="project" />
     <orderEntry type="library" name="Gradle: com.google.guava:guava:26.0-jre" level="project" />
     <orderEntry type="library" name="Gradle: com.google.code.findbugs:jsr305:3.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.checkerframework:checker-qual:2.5.2" level="project" />
