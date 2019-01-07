@@ -44,7 +44,7 @@ public class Requestor implements Runnable {
     }
 
     public void start() throws JMSException {
-        System.out.println("Starting Thread" + threadName );
+        System.out.println("Starting Thread: " + threadName );
         if (thread == null) {
             thread = new Thread (this, threadName);
             isRunning = true;

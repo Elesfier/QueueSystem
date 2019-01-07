@@ -45,7 +45,7 @@ public class Replier implements Runnable, ExceptionListener {
     }
 
     public void start() throws JMSException {
-        System.out.println("Starting " + threadName );
+        System.out.println("Starting Thread: " + threadName );
         if (thread == null) {
             thread = new Thread (this, threadName);
             isRunning = true;

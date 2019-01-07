@@ -1,8 +1,22 @@
 
 package QueueSystem;
 
-import Communication.Replier;
-import Communication.Requestor;
+import Communication.LocalService;
+
+class BaBu extends LocalService {
+
+    public BaBu() {
+        super("Babu");
+        addReplier("BabuRep", "TEST.FOO");
+        addRequestor("BabuReq", "TEST.FOO");
+        start();
+    }
+
+    @Override
+    public void onReceivedMessage(String request, String[] messages) {
+        System.out.println( "Received form " + request + " : " + messages[0] );
+    }
+}
 
 /**
  * Hello world!
@@ -11,16 +25,10 @@ public class App {
 
     public static void main(String[] args) throws Exception {
 
-        Requestor requestor = new Requestor("Requestor1",  "TEST.FOO");
-        Replier replier = new Replier("Replier1",  "TEST.FOO");
+        LocalService service = new BaBu();
 
-        requestor.start();
-        requestor.sendMessage( "hueueueueue" );
-        requestor.sendMessage( "aaaaaaaaaaa" );
-        Thread.sleep(1000);
-        replier.start();
-        Thread.sleep(5000);
-        replier.receiveMessage();
+        service.sendMessage("BabuReq", "laaaa");
+
     }
 
 }
