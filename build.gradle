@@ -29,13 +29,7 @@ dependencies {
 }
 
 // Define the main class for the application
-mainClassName = 'QueueSystem.App'
-
-task runJar( type: JavaExec ) {
-    classpath = files('build/libs/QueueSystem.jar ')
-    classpath += sourceSets.main.runtimeClasspath
-    main = mainClassName
-}
+//mainClassName = 'Services.Client'
 
 task runClient( type: JavaExec ) {
     classpath = files('build/libs/QueueSystem.jar ')

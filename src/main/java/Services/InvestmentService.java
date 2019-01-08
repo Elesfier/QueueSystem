@@ -6,35 +6,31 @@ import Communication.LocalService;
 public class InvestmentService extends LocalService {
 
     InvestmentService() {
-        super("Investment-Service");
-        addReplier("Investment-Replier", "EXAMPLE.INVESTMENT");
-        addRequestor("Investment-Client", "EXAMPLE.CLIENT");
-        addRequestor("Investment-Database", "EXAMPLE.DATABASE");
-        addRequestor("Investment-Authorization", "EXAMPLE.AUTHORIZATION");
+        super("Investment-Service", "INVESTMENT");
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
 
         switch (request) {
-            case "Client-Investment":
+            case "CLIENT":
             {
-                System.out.println("Client->Investment");
-                sendMessage("Investment-Authorization", "CCCCC" );
+                System.out.println("CLIENT");
+                sendMessage("AUTHORIZATION", "CCCCC" );
                 //TODO
                 break;
             }
-            case "Authorization-Investment":
+            case "AUTHORIZATION":
             {
-                System.out.println("Authorization->Investment");
-                sendMessage("Investment-Database", "CCCCC" );
+                System.out.println("AUTHORIZATION");
+                sendMessage("DATABASE", "CCCCC" );
                 //TODO
                 break;
             }
-            case "Database-Investment":
+            case "DATABASE":
             {
-                System.out.println("Database->Investment");
-                sendMessage("Investment-Client", "udalo sie" );
+                System.out.println("DATABASE");
+                sendMessage("CLIENT", "udalo sie" );
                 //TODO
                 break;
             }

@@ -2,10 +2,7 @@
 package Communication;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.apache.activemq.command.ActiveMQQueue;
-
 import javax.jms.*;
-
 import java.util.PriorityQueue;
 
 public class Replier implements Runnable, ExceptionListener {
@@ -20,17 +17,6 @@ public class Replier implements Runnable, ExceptionListener {
 
     private synchronized PriorityQueue<String> getQueue() {
         return queue;
-    }
-
-    public Replier(String threadName, String queuePath) throws JMSException {
-        this.threadName = threadName;
-        this.queuePath = queuePath;
-        this.isRunning = false;
-        this.canSend = true;
-        queue = new PriorityQueue<String>();
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        connection = factory.createConnection();
-        System.out.println("Creating Thread: " + threadName);
     }
 
     public Replier(String threadName, String queuePath, String brokerUrl) throws JMSException {

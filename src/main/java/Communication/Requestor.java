@@ -9,9 +9,9 @@ public class Requestor implements Runnable {
 
     boolean isRunning;
     boolean canSend;
-    private String queuePath;
     private Thread thread;
     private String threadName;
+    private String queuePathFrom;
     private Connection connection;
     private PriorityQueue<String> queue;
 
@@ -21,20 +21,9 @@ public class Requestor implements Runnable {
         }
     }
 
-    public Requestor(String threadName, String queuePath) throws JMSException {
+    public Requestor(String threadName, String queuePathFrom, String brokerUrl) throws JMSException {
         this.threadName = threadName;
-        this.queuePath = queuePath;
-        this.isRunning = false;
-        this.canSend = true;
-        queue = new PriorityQueue<String>();
-        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("tcp://localhost:61616");
-        connection = factory.createConnection();
-        System.out.println("Creating Thread: " + threadName);
-    }
-
-    public Requestor(String threadName, String queuePath, String brokerUrl) throws JMSException {
-        this.threadName = threadName;
-        this.queuePath = queuePath;
+        this.queuePathFrom = queuePathFrom;
         this.isRunning = false;
         this.canSend = true;
         queue = new PriorityQueue<String>();
@@ -59,15 +48,17 @@ public class Requestor implements Runnable {
         connection.close();
     }
 
-    public void sendMessage( String message ) {
+    public void sendMessage( String queuePath, String message ) {
         if ( isRunning ) {
-            getQueue().add("<" + message + ">");
+            if ( queuePath.indexOf("|") != -1 ) return;
+            getQueue().add( queuePath + "|<" + queuePathFrom + "><" + message + ">");
         }
     }
 
-    public void sendMessage( String[] messages ) {
+    public void sendMessage( String queuePath, String[] messages ) {
         if ( isRunning ) {
-            getQueue().add( "<" + String.join("><", messages ) + ">" );
+            if ( queuePath.indexOf("|") != -1 ) return;
+            getQueue().add( queuePath + "|<" + queuePathFrom + "><" + String.join("><", messages ) + ">");
         }
     }
 
@@ -90,6 +81,12 @@ public class Requestor implements Runnable {
                     // Create a Session
                     Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
+                    // Get MessageStr
+                    String messageStr = getQueue().poll();
+
+                    // Queue Path create
+                    String queuePath = messageStr.substring(0, messageStr.indexOf("|"));
+
                     // Create the destination (Topic or Queue)
                     Destination destination = session.createQueue(queuePath);
 
@@ -98,7 +95,7 @@ public class Requestor implements Runnable {
                     producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
 
                     // Create a messages
-                    TextMessage message = session.createTextMessage("<"+ threadName +">"+ getQueue().poll());
+                    TextMessage message = session.createTextMessage(messageStr.substring(messageStr.indexOf("|")+1, messageStr.length()));
 
                     // Send the message
                     producer.send(message);

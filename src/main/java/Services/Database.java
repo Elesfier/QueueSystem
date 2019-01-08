@@ -6,26 +6,23 @@ import Communication.LocalService;
 public class Database extends LocalService {
 
     Database() {
-        super("Database");
-        addReplier("Database-Replier", "EXAMPLE.DATABASE");
-        addRequestor("Database-Investment", "EXAMPLE.INVESTMENT");
-        addRequestor("Database-Authorization", "EXAMPLE.AUTHORIZATION");
+        super("Database", "DATABASE");
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
         switch (request) {
-            case "Investment-Database":
+            case "INVESTMENT":
             {
-                System.out.println("Investment->Database");
-                sendMessage("Database-Investment", "BBBBB" );
+                System.out.println("INVESTMENT");
+                sendMessage("INVESTMENT", "BBBBB" );
                 //TODO
                 break;
             }
-            case "Authorization-Database":
+            case "AUTHORIZATION":
             {
-                System.out.println("Authorization->Database");
-                sendMessage("Database-Authorization", "AAAA" );
+                System.out.println("AUTHORIZATION");
+                sendMessage("AUTHORIZATION", "AAAA" );
                 //TODO
                 break;
             }

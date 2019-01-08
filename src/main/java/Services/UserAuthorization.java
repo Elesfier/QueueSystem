@@ -6,26 +6,23 @@ import Communication.LocalService;
 public class UserAuthorization extends LocalService {
 
     UserAuthorization() {
-        super("User-Authorization");
-        addReplier("Authorization-Replier", "EXAMPLE.AUTHORIZATION");
-        addRequestor("Authorization-Investment", "EXAMPLE.INVESTMENT");
-        addRequestor("Authorization-Database", "EXAMPLE.DATABASE");
+        super("User-Authorization", "AUTHORIZATION");
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
         switch (request) {
-            case "Investment-Authorization":
+            case "INVESTMENT":
             {
-                System.out.println("Investment->Authorization");
-                sendMessage("Authorization-Database", "DDDDD" );
+                System.out.println("INVESTMENT");
+                sendMessage("DATABASE", "DDDDD" );
                 //TODO
                 break;
             }
-            case "Database-Authorization":
+            case "DATABASE":
             {
-                System.out.println("Database->Authorization");
-                sendMessage("Authorization-Investment", "DDDDD" );
+                System.out.println("DATABASE");
+                sendMessage("INVESTMENT", "DDDDD" );
                 //TODO
                 break;
             }

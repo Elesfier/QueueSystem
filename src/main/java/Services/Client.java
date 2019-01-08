@@ -3,22 +3,18 @@ package Services;
 
 import Communication.LocalService;
 
-import java.util.Arrays;
-
 public class Client extends LocalService {
 
     Client() {
-        super("Client");
-        addReplier("Client-Replier", "EXAMPLE.CLIENT");
-        addRequestor("Client-Investment", "EXAMPLE.INVESTMENT");
+        super("Client", "CLIENT");
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
         switch (request) {
-            case "Investment-Client":
+            case "INVESTMENT":
             {
-                System.out.println("Investment-Client");
+                System.out.println("INVESTMENT");
                 //TODO
                 break;
             }
@@ -40,8 +36,7 @@ public class Client extends LocalService {
             }
 
             String[] message = { "user", "password", "investement", "BLABLA", "100" };
-            System.out.println("Client->Investment");
-            client.sendMessage("Client-Investment", message );
+            client.sendMessage("INVESTMENT", message );
         }
     }
 }
