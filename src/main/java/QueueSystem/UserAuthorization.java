@@ -1,12 +1,12 @@
 
-package Services;
+package QueueSystem;
 
 import Communication.LocalService;
 
-public class Database extends LocalService {
+public class UserAuthorization extends LocalService {
 
-    Database() {
-        super("Database", "DATABASE");
+    UserAuthorization() {
+        super("User-Authorization", "AUTHORIZATION");
     }
 
     @Override
@@ -15,14 +15,14 @@ public class Database extends LocalService {
             case "INVESTMENT":
             {
                 System.out.println("INVESTMENT");
-                sendMessage("INVESTMENT", "BBBBB" );
+                sendMessage("DATABASE", "DDDDD" );
                 //TODO
                 break;
             }
-            case "AUTHORIZATION":
+            case "DATABASE":
             {
-                System.out.println("AUTHORIZATION");
-                sendMessage("AUTHORIZATION", "AAAA" );
+                System.out.println("DATABASE");
+                sendMessage("INVESTMENT", "DDDDD" );
                 //TODO
                 break;
             }
@@ -32,7 +32,7 @@ public class Database extends LocalService {
     }
 
     public static void main( String[] args ) {
-        Database database = new Database();
-        database.start();
+        UserAuthorization userAuthorization = new UserAuthorization();
+        userAuthorization.start();
     }
 }

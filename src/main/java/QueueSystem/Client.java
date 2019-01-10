@@ -1,5 +1,5 @@
 
-package Services;
+package QueueSystem;
 
 import Communication.LocalService;
 

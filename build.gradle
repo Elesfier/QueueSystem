@@ -28,31 +28,40 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-// Define the main class for the application
-//mainClassName = 'Services.Client'
-
 task runClient( type: JavaExec ) {
+    group = 'queueSystem'
     classpath = files('build/libs/QueueSystem.jar ')
     classpath += sourceSets.main.runtimeClasspath
-    main = 'Services.Client'
+    main = 'QueueSystem.Client'
 }
 
 task runDatabase( type: JavaExec ) {
+    group = 'queueSystem'
     classpath = files('build/libs/QueueSystem.jar ')
     classpath += sourceSets.main.runtimeClasspath
-    main = 'Services.Database'
+    main = 'QueueSystem.Database'
 }
 
 task runInvestmentService( type: JavaExec ) {
+    group = 'queueSystem'
     classpath = files('build/libs/QueueSystem.jar ')
     classpath += sourceSets.main.runtimeClasspath
-    main = 'Services.InvestmentService'
+    main = 'QueueSystem.InvestmentService'
 }
 
 task runAuthorization( type: JavaExec ) {
+    group = 'queueSystem'
     classpath = files('build/libs/QueueSystem.jar ')
     classpath += sourceSets.main.runtimeClasspath
-    main = 'Services.UserAuthorization'
+    main = 'QueueSystem.UserAuthorization'
+}
+
+task runCustomer01( type: JavaExec ) {
+    group = 'philosophersproblem'
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'PhilosophersProblem.Customer'
+    args = ["1"]
 }
 
 build.dependsOn.add("runJar")
