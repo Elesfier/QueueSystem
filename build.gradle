@@ -61,7 +61,39 @@ task runCustomer01( type: JavaExec ) {
     classpath = files('build/libs/QueueSystem.jar ')
     classpath += sourceSets.main.runtimeClasspath
     main = 'PhilosophersProblem.Customer'
-    args = ["1"]
+    args = ["1", "2"]
+}
+
+task runCustomer02( type: JavaExec ) {
+    group = 'philosophersproblem'
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'PhilosophersProblem.Customer'
+    args = ["2", "3"]
+}
+
+task runCustomer03( type: JavaExec ) {
+    group = 'philosophersproblem'
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'PhilosophersProblem.Customer'
+    args = ["3", "4"]
+}
+
+task runCustomer04( type: JavaExec ) {
+    group = 'philosophersproblem'
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'PhilosophersProblem.Customer'
+    args = ["4", "5"]
+}
+
+task runCustomer05( type: JavaExec ) {
+    group = 'philosophersproblem'
+    classpath = files('build/libs/QueueSystem.jar ')
+    classpath += sourceSets.main.runtimeClasspath
+    main = 'PhilosophersProblem.Customer'
+    args = ["5", "1"]
 }
 
 build.dependsOn.add("runJar")
