@@ -47,6 +47,7 @@ public class Customer extends LocalService {
                 case "GIVE_BACK_FORK":
                     //System.out.println( "GIVE_BACK_FORK" );
                     ownFork = StatusFork.CLEAN;
+                    System.out.println( "> " + getName() + ": odzyskuje z powrotem swoj klucz. (clean fork)");
                     if ( ownFork.equals(StatusFork.CLEAN) && !dependFork.equals(StatusFork.NONE) ) {
                         eatTask();
                     }
@@ -55,6 +56,7 @@ public class Customer extends LocalService {
                     //System.out.println( "GIVE_FORK" );
                     if ( index == dependIndex ) {
                         dependFork = StatusFork.CLEAN;
+                        System.out.println( "> " + getName() + ": pozyskuje klucz od " + "Customer" + Integer.toString(index) + ". (fork)");
                         if ( dependFork.equals(StatusFork.CLEAN) && !ownFork.equals(StatusFork.NONE) ) {
                             eatTask();
                         }
@@ -65,10 +67,12 @@ public class Customer extends LocalService {
                 case "GIVE_ME_FORK":
                     //System.out.println( "GIVE_ME_FORK" );
                     if (ownFork.equals(StatusFork.DIRTY) ) {
+                        System.out.println( "> " + getName() + ": wysyla swoj klucz do " + "Customer" + Integer.toString(index) + ". (fork)");
                         this.ownFork = StatusFork.NONE;
                         String[] message = { "GIVE_FORK" };
                         sendMessage("CUSTOMER" + Integer.toString( index ), message );
                     } else {
+                        System.out.println( "> " + getName() + ": dodaje do wanted " + "Customer" + Integer.toString(index) + ".");
                         wantedIndex = index;
                     }
                     break;
@@ -84,13 +88,16 @@ public class Customer extends LocalService {
 
     private void eatTask() {
 
-        System.out.println( getName() + ": Eating");
-
+        if ( !dependFork.equals( StatusFork.NONE ) && !ownFork.equals( StatusFork.NONE ) ) {
+            System.out.println( "> " + getName() + ": pobiera dane dzięki pozyskanym klucza. (eating)");
+        }
 
         dependFork = StatusFork.DIRTY;
 
         if ( wantedIndex != -1 ) {
             ownFork = StatusFork.NONE;
+
+            System.out.println( "> " + getName() + ": wysyla swoj klucz do " + "Customer" + Integer.toString(wantedIndex) + ". (fork)");
             String[] secondMessage = { "GIVE_FORK" };
             sendMessage("CUSTOMER" + Integer.toString( wantedIndex ), secondMessage );
             wantedIndex = -1;
@@ -107,8 +114,6 @@ public class Customer extends LocalService {
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
-
-        System.out.println( "ownFork: " + ownFork + " dependFork: " + dependFork );
 
         //Want to eat
         String[] message = { "GIVE_ME_FORK" };
