@@ -29,11 +29,11 @@ public class Requestor implements Runnable {
         queue = new PriorityQueue<String>();
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
         connection = factory.createConnection();
-        System.out.println("Creating Thread: " + threadName);
+        //System.out.println("Creating Thread: " + threadName);
     }
 
     public void start() throws JMSException {
-        System.out.println("Starting Thread: " + threadName );
+        //System.out.println("Starting Thread: " + threadName );
         if (thread == null) {
             thread = new Thread (this, threadName);
             isRunning = true;
@@ -92,7 +92,8 @@ public class Requestor implements Runnable {
 
                     // Create a MessageProducer from the Session to the Topic or Queue
                     MessageProducer producer = session.createProducer(destination);
-                    producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                    //producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
+                    //producer.setDeliveryDelay(1000);
 
                     // Create a messages
                     TextMessage message = session.createTextMessage(messageStr.substring(messageStr.indexOf("|")+1, messageStr.length()));

@@ -10,7 +10,7 @@ public abstract class LocalService implements Runnable {
     private Thread thread;
 
     private final String queueBase = "LOCALSERVICE.";
-    private final String brokerUrl = "tcp://localhost:61616";
+    private final String defaultBrokerUrl = "tcp://localhost:61616";
 
     //Queue Replier (in)
     Replier replier;
@@ -18,7 +18,7 @@ public abstract class LocalService implements Runnable {
     //Queue Requestor (out)
     Requestor requestor;
 
-    public LocalService( String threadName, String queuePath ) {
+    public LocalService( String threadName, String queuePath, String brokerUrl ) {
         this.threadName = threadName;
         this.isRunning = false;
         try {
@@ -28,7 +28,20 @@ public abstract class LocalService implements Runnable {
             System.out.println("Caught: " + e);
             e.printStackTrace();
         }
-        System.out.println("Creating Service: " + threadName);
+        //System.out.println("Creating Service: " + threadName);
+    }
+
+    public LocalService( String threadName, String queuePath ) {
+        this.threadName = threadName;
+        this.isRunning = false;
+        try {
+            this.replier = new Replier(threadName + "-replier", queueBase + queuePath, defaultBrokerUrl);
+            this.requestor = new Requestor(threadName + "-requestor", queuePath,  defaultBrokerUrl);
+        } catch (Exception e) {
+            System.out.println("Caught: " + e);
+            e.printStackTrace();
+        }
+        //System.out.println("Creating Service: " + threadName);
     }
 
     public void start() {

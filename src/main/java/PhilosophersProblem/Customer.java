@@ -1,4 +1,3 @@
-
 package PhilosophersProblem;
 
 import Communication.LocalService;
@@ -28,8 +27,8 @@ public class Customer extends LocalService {
     private int wantedIndex;
 
 
-    Customer( int index, int dependIndex ) {
-        super("Customer","CUSTOMER" + Integer.toString(index));
+    Customer( int index, int dependIndex, String brokerUrl ) {
+        super("Customer","CUSTOMER" + Integer.toString(index), brokerUrl);
         this.ownIndex = index;
         this.wantedIndex = -1;
         this.dependIndex = dependIndex;
@@ -86,7 +85,7 @@ public class Customer extends LocalService {
     private void eatTask() {
 
         System.out.println( getName() + ": Eating");
-        //TODO
+
 
         dependFork = StatusFork.DIRTY;
 
@@ -122,7 +121,8 @@ public class Customer extends LocalService {
     }
 
     public static void main( String[] args ) {
-        Customer customer = new Customer(Integer.parseInt(args[0]),Integer.parseInt(args[1]));
+        if ( args.length < 3 ) return;
+        Customer customer = new Customer(Integer.parseInt(args[0]),Integer.parseInt(args[1]), args[2]);
         customer.start();
 
         while( true ) {

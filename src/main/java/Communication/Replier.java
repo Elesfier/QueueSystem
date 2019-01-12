@@ -27,11 +27,11 @@ public class Replier implements Runnable, ExceptionListener {
         queue = new PriorityQueue<String>();
         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(brokerUrl);
         connection = factory.createConnection();
-        System.out.println("Creating Thread: " + threadName);
+        //System.out.println("Creating Thread: " + threadName);
     }
 
     public void start() throws JMSException {
-        System.out.println("Starting Thread: " + threadName );
+        //System.out.println("Starting Thread: " + threadName );
         if (thread == null) {
             thread = new Thread (this, threadName);
             isRunning = true;
