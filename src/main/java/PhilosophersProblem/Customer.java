@@ -25,57 +25,120 @@ public class Customer extends LocalService {
 
     private boolean isPreparingToEat;
     private int wantedIndex;
+    private int wantedBackIndex;
+    private int wantedIndexBack;
 
+    private boolean dependIndexWantBack;
+    private boolean backIndexWant;
+    private boolean wantEat;
 
-    Customer( int index, int dependIndex, String brokerUrl ) {
-        super("Customer","CUSTOMER" + Integer.toString(index), brokerUrl);
+    private final boolean logON = false;
+
+    private final String CustomerQueueName = "CUSTOMER30";
+
+    Customer( int backIndex, int index, int dependIndex, String brokerUrl ) {
+        super("Customer" + Integer.toString(index),"CUSTOMER30" + Integer.toString(index), brokerUrl);
         this.ownIndex = index;
         this.wantedIndex = -1;
+        this.wantedBackIndex = -1;
+        this.wantedIndexBack = backIndex;
         this.dependIndex = dependIndex;
         this.ownFork = StatusFork.DIRTY;
         this.dependFork = StatusFork.NONE;
         this.isPreparingToEat = false;
+
+        this.dependIndexWantBack = false;
+        this.backIndexWant = false;
+        this.wantEat = false;
+    }
+
+    public synchronized void tryToEat() {
+        if ( !ownFork.equals(StatusFork.NONE) && !dependFork.equals(StatusFork.NONE) ) {
+            System.out.println( "> " + getName() + ": pobiera dane dzięki pozyskanym kluczom.");
+            ownFork = StatusFork.DIRTY;
+            dependFork = StatusFork.DIRTY;
+        }
+    }
+
+    public void sendDependFork() {
+        if ( dependFork.equals(StatusFork.DIRTY) ) {
+            if(logON)System.out.println("> " + getName() + ": zwraca klucz.");
+            dependFork = StatusFork.NONE;
+            String[] message = {"GIVE_BACK_FORK"};
+            sendMessage(CustomerQueueName + Integer.toString(dependIndex), message);
+            dependIndexWantBack = false;
+        }
+    }
+
+    public void sendOwnFork() {
+        if ( ownFork.equals(StatusFork.DIRTY) ) {
+            if(logON)System.out.println( "> " + getName() + ": wysyla swoj klucz do " + "Customer" + Integer.toString(wantedIndexBack) + ".");
+            ownFork = StatusFork.NONE;
+            String[] message = { "GIVE_FORK" };
+            sendMessage(CustomerQueueName + Integer.toString( wantedIndexBack ), message );
+            backIndexWant = false;
+        }
+    }
+
+    public void getDependFork() {
+        if ( dependFork.equals( StatusFork.NONE ) ) {
+            dependFork = StatusFork.CLEAN;
+            if(logON)System.out.println( "> " + getName() + ": pozyskuje klucz od " + "Customer" + Integer.toString(dependIndex) + ".");
+        }
+    }
+
+    public void getOwnFork() {
+        if ( ownFork.equals( StatusFork.NONE ) ) {
+            ownFork = StatusFork.CLEAN;
+            if(logON)System.out.println( "> " + getName() + ": odzyskuje z powrotem swoj klucz.");
+        }
+    }
+
+    public void sendRequestOfDepend() {
+        if ( dependFork.equals( StatusFork.NONE ) ) {
+            if(logON)System.out.println("> " + getName() + ": wysyla prosbe o danie klucza " + "Customer" + Integer.toString( dependIndex ) + ".");
+            String[] message = {"GIVE_ME_YOUR_FORK"};
+            sendMessage(CustomerQueueName + Integer.toString(dependIndex), message);
+        } else {
+            tryToEat();
+        }
+    }
+
+    public void sendRequestOfOwn() {
+        if ( ownFork.equals( StatusFork.NONE ) ) {
+            if(logON)System.out.println("> " + getName() + ": wysyla prosbe o danie z powrotem klucza od" + "Customer" + Integer.toString( wantedIndexBack ) + ".");
+            String[] secondMessage = {"GIVE_BACK_MY_FORK"};
+            sendMessage(CustomerQueueName + Integer.toString(wantedIndexBack), secondMessage);
+        } else {
+            tryToEat();
+        }
     }
 
     @Override
     public void onReceivedMessage(String request, String[] messages) {
         try {
 
-            int index = Integer.parseInt(request.substring("CUSTOMER".length(), request.length()));
+            int index = Integer.parseInt(request.substring(CustomerQueueName.length(), request.length()));
 
             switch (messages[0]) {
-                case "GIVE_BACK_FORK":
-                    //System.out.println( "GIVE_BACK_FORK" );
-                    ownFork = StatusFork.CLEAN;
-                    System.out.println( "> " + getName() + ": odzyskuje z powrotem swoj klucz. (clean fork)");
-                    if ( ownFork.equals(StatusFork.CLEAN) && !dependFork.equals(StatusFork.NONE) ) {
-                        eatTask();
-                    }
+
+                case "GIVE_BACK_FORK": //Zdobywasz fork own
+                    getOwnFork();
                     break;
-                case "GIVE_FORK":
-                    //System.out.println( "GIVE_FORK" );
-                    if ( index == dependIndex ) {
-                        dependFork = StatusFork.CLEAN;
-                        System.out.println( "> " + getName() + ": pozyskuje klucz od " + "Customer" + Integer.toString(index) + ". (fork)");
-                        if ( dependFork.equals(StatusFork.CLEAN) && !ownFork.equals(StatusFork.NONE) ) {
-                            eatTask();
-                        }
-                    } else {
-                        System.out.println( getName() + ": strange index.");
-                    }
+
+                case "GIVE_FORK": //Zdobywasz fork depend
+                    getDependFork();
                     break;
-                case "GIVE_ME_FORK":
-                    //System.out.println( "GIVE_ME_FORK" );
-                    if (ownFork.equals(StatusFork.DIRTY) ) {
-                        System.out.println( "> " + getName() + ": wysyla swoj klucz do " + "Customer" + Integer.toString(index) + ". (fork)");
-                        this.ownFork = StatusFork.NONE;
-                        String[] message = { "GIVE_FORK" };
-                        sendMessage("CUSTOMER" + Integer.toString( index ), message );
-                    } else {
-                        System.out.println( "> " + getName() + ": dodaje do wanted " + "Customer" + Integer.toString(index) + ".");
-                        wantedIndex = index;
-                    }
+
+                case "GIVE_BACK_MY_FORK": //Tracisz fork depend
+                    sendDependFork();
                     break;
+
+                case "GIVE_ME_YOUR_FORK": //Tracisz fork own
+                    wantedIndexBack = index;
+                    sendOwnFork();
+                    break;
+
                 default:
                     System.out.println( getName() + ": strange command.");
             }
@@ -86,52 +149,48 @@ public class Customer extends LocalService {
         }
     }
 
-    private void eatTask() {
+    private synchronized void eatTask() {
 
-        if ( !dependFork.equals( StatusFork.NONE ) && !ownFork.equals( StatusFork.NONE ) ) {
-            System.out.println( "> " + getName() + ": pobiera dane dzięki pozyskanym klucza. (eating)");
-        }
+        //if ( wantEat ) {
+            System.out.println( "> " + getName() + ": pobiera dane dzięki pozyskanym kluczom.");
+        //}
 
-        dependFork = StatusFork.DIRTY;
-
-        if ( wantedIndex != -1 ) {
-            ownFork = StatusFork.NONE;
-
-            System.out.println( "> " + getName() + ": wysyla swoj klucz do " + "Customer" + Integer.toString(wantedIndex) + ". (fork)");
-            String[] secondMessage = { "GIVE_FORK" };
-            sendMessage("CUSTOMER" + Integer.toString( wantedIndex ), secondMessage );
-            wantedIndex = -1;
+        if ( backIndexWant ) {
+            sendOwnFork();
         } else {
             ownFork = StatusFork.DIRTY;
         }
 
-        //isPreparingToEat = false;
+        if ( dependIndexWantBack ) {
+            sendDependFork();
+        } else {
+            dependFork = StatusFork.DIRTY;
+        }
+
+        wantEat = false;
     }
 
     public void periodTask() {
+
         try {
             Thread.sleep(2000);
         } catch(Exception e) {
             System.out.println(e.getMessage());
         }
 
-        //Want to eat
-        String[] message = { "GIVE_ME_FORK" };
-        sendMessage("CUSTOMER" + Integer.toString( dependIndex ), message );
-        if ( ownFork.equals( StatusFork.NONE ) ) {
-            String[] secondMessage = { "GIVE_BACK_FORK" };
-            sendMessage("CUSTOMER" + Integer.toString( wantedIndex ), secondMessage );
-        }
-        //isPreparingToEat = true;
+        System.out.println( "Wlany klucz: " + ownFork + " Klucz sasiada: " + dependFork );
+        sendRequestOfDepend();
+        sendRequestOfOwn();
     }
 
     public static void main( String[] args ) {
-        if ( args.length < 3 ) return;
-        Customer customer = new Customer(Integer.parseInt(args[0]),Integer.parseInt(args[1]), args[2]);
+        if ( args.length < 4 ) return;
+        Customer customer = new Customer(Integer.parseInt(args[0]),Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3]);
         customer.start();
 
         while( true ) {
             customer.periodTask();
         }
+
     }
 }
