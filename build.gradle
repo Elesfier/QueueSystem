@@ -25,6 +25,8 @@ dependencies {
     compile group: 'org.apache.activemq', name: 'activemq-all', version: '5.4.2'
 }
 
+mainClassName = 'PhilosophersProblem.Customer'
+
 task runClient( type: JavaExec ) {
     group = 'queueSystem'
     classpath = files('build/libs/QueueSystem.jar ')
