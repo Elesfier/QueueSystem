@@ -3,10 +3,10 @@ package QueueSystem;
 
 import Communication.LocalService;
 
-public class InvestmentService extends LocalService {
+public class CreditService extends LocalService {
 
-    InvestmentService( String brokerUrl ) {
-        super("Investment-Service", "INVESTMENT", brokerUrl);
+    CreditService(String brokerUrl ) {
+        super("Credit-Service", "CREDIT", brokerUrl);
     }
 
     @Override
@@ -15,7 +15,7 @@ public class InvestmentService extends LocalService {
         switch (request) {
             case "CLIENT":
             {
-                System.out.println("Nowa inwestycja powstala przez uzytkownika " + messages[0] + ".");
+                System.out.println("Nowe zlecenie na kredyt stworzone przez uzytkownika " + messages[0] + ".");
                 sendMessage("AUTHORIZATION", messages );
                 break;
             }
@@ -27,7 +27,7 @@ public class InvestmentService extends LocalService {
             }
             case "DATABASE":
             {
-                System.out.println("Inwestycja wprowadzona w bazie danych banku dla uzytkownika " + messages[0] + ".");
+                System.out.println("Dane o kredycie zostaly wprowadzone do bazy danych dla uzytkownika " + messages[0] + ".");
                 sendMessage("CLIENT", messages );
                 break;
             }
@@ -38,7 +38,7 @@ public class InvestmentService extends LocalService {
 
     public static void main( String[] args ) {
         String brokerUrl = (args.length < 1 )?("tcp://localhost:61616"):(args[0]);
-        InvestmentService investmentService = new InvestmentService( brokerUrl );
+        CreditService investmentService = new CreditService( brokerUrl );
         investmentService.start();
     }
 }

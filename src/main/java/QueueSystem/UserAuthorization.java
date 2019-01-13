@@ -5,8 +5,8 @@ import Communication.LocalService;
 
 public class UserAuthorization extends LocalService {
 
-    UserAuthorization() {
-        super("User-Authorization", "AUTHORIZATION");
+    UserAuthorization( String brokerUrl ) {
+        super("User-Authorization", "AUTHORIZATION", brokerUrl);
     }
 
     @Override
@@ -14,16 +14,25 @@ public class UserAuthorization extends LocalService {
         switch (request) {
             case "INVESTMENT":
             {
-                System.out.println("INVESTMENT");
-                sendMessage("DATABASE", "DDDDD" );
-                //TODO
+                System.out.println("Autoryzacja dla uzytkownika " + messages[0] + ". (Inwestycja)");
+                sendMessage("DATABASE", messages );
                 break;
             }
             case "DATABASE":
             {
-                System.out.println("DATABASE");
-                sendMessage("INVESTMENT", "DDDDD" );
-                //TODO
+                if ( messages.length > 4 ) {
+                    System.out.println("Autoryzacja z bazy danych sie powiodla dla uzytkownika " + messages[0] + ". (Inwestycja)");
+                    sendMessage("INVESTMENT", messages );
+                } else {
+                    System.out.println("Autoryzacja z bazy danych sie powiodla dla uzytkownika " + messages[0] + ". (Kredyt)");
+                    sendMessage("CREDIT", messages );
+                }
+                break;
+            }
+            case "CREDIT":
+            {
+                System.out.println("Autoryzacja dla uzytkownika " + messages[0] + ". (Kredyt)");
+                sendMessage("DATABASE", messages );
                 break;
             }
             default:
@@ -32,7 +41,8 @@ public class UserAuthorization extends LocalService {
     }
 
     public static void main( String[] args ) {
-        UserAuthorization userAuthorization = new UserAuthorization();
+        String brokerUrl = (args.length < 1 )?("tcp://localhost:61616"):(args[0]);
+        UserAuthorization userAuthorization = new UserAuthorization( brokerUrl );
         userAuthorization.start();
     }
 }
